@@ -1,13 +1,12 @@
 import random
 import numpy as np
 
-
+global signal
 def initTable(list, num):
     for i in xrange(0, 10, 1):
         for j in xrange(0, 10, 1):
             list[i][j] = random.randint(1, num)
     pass
-
 
 def checkTable(table):
     same = 0
@@ -24,12 +23,11 @@ def checkTable(table):
     else:
         return False
 
-
-def printTable(table):
+def printTable(table,num):
     if checkTable(table) == True:
         print("table refresh")
         initTable(table, num)
-        printTable(table)
+        printTable(table, num)
     else:
         print(table)
 
@@ -58,7 +56,7 @@ def checkCoor(x1, y1, x2, y2):
         return status
 
 
-def swapx(x1, x2, y):
+def swapx(table, x1, x2, y, num):
     global signal
     i = 10 - y
     j1 = x1 - 1
@@ -69,7 +67,7 @@ def swapx(x1, x2, y):
     if (checkTable(table)):
         print("nice")
         searchConnected(table)
-        print(drop(table, signal))
+        print(drop(table, signal, num))
     else:
         print("change failed")
         temp = table[i][j1]
@@ -78,7 +76,7 @@ def swapx(x1, x2, y):
         print(table)
 
 
-def swapy(x, y1, y2):
+def swapy(table, x, y1, y2, num):
     global signal
     i1 = 10 - y1
     i2 = 10 - y2
@@ -89,7 +87,7 @@ def swapy(x, y1, y2):
     if (checkTable(table)):
         print("nice")
         searchConnected(table)
-        print(drop(table, signal))
+        print(drop(table, signal, num))
     else:
         print("change failed")
         temp = table[i1][j]
@@ -98,20 +96,21 @@ def swapy(x, y1, y2):
         print(table)
 
 
-def threesame(a1, b1, a2, b2, a3, b3):
+
+def threesame(table, a1, b1, a2, b2, a3, b3):
     table[a1][b1] = 0
     table[a2][b2] = 0
     table[a3][b3] = 0
 
 
-def foursame(a1, b1, a2, b2, a3, b3, a4, b4):
+def foursame(table, a1, b1, a2, b2, a3, b3, a4, b4):
     table[a1][b1] = 0
     table[a2][b2] = 0
     table[a3][b3] = 0
     table[a4][b4] = 0
 
 
-def fivesame(a1, b1, a2, b2, a3, b3, a4, b4, a5, b5):
+def fivesame(table, a1, b1, a2, b2, a3, b3, a4, b4, a5, b5):
     table[a1][b1] = 0
     table[a2][b2] = 0
     table[a3][b3] = 0
@@ -125,44 +124,44 @@ def searchConnected(table):
         for j in xrange(0, 6, 1):
             if table[i][j] == table[i][j + 1] and table[i][j + 1] == table[i][j + 2] and table[i][j + 2] == table[i][
                         j + 3] and table[i][j + 3] == table[i][j + 4]:
-                fivesame(i, j, i, j + 1, i, j + 2, i, j + 3, i, j + 4)
+                fivesame(table, i, j, i, j + 1, i, j + 2, i, j + 3, i, j + 4)
                 signal = 5
 
     for i in xrange(0, 10, 1):
         for j in xrange(0, 7, 1):
             if table[i][j] == table[i][j + 1] and table[i][j + 1] == table[i][j + 2] and table[i][j + 2] == table[i][
                         j + 3]:
-                foursame(i, j, i, j + 1, i, j + 2, i, j + 3)
+                foursame(table, i, j, i, j + 1, i, j + 2, i, j + 3)
                 signal = 4
 
     for i in xrange(0, 10, 1):
         for j in xrange(0, 8, 1):
             if table[i][j] == table[i][j + 1] and table[i][j + 1] == table[i][j + 2]:
-                threesame(i, j, i, j + 1, i, j + 2)
+                threesame(table, i, j, i, j + 1, i, j + 2)
                 signal = 3
 
     for i in xrange(0, 10, 1):
         for j in xrange(0, 6, 1):
             if table[j][i] == table[j + 1][i] and table[j + 1][i] == table[j + 2][i] and table[j + 3][i] == \
                     table[j + 2][i] and table[j + 3][i] == table[j + 4][i]:
-                fivesame(j, i, j + 1, i, j + 2, i, j + 3, i, j + 4, i)
+                fivesame(table, j, i, j + 1, i, j + 2, i, j + 3, i, j + 4, i)
                 signal = 5
 
     for i in xrange(0, 10, 1):
         for j in xrange(0, 7, 1):
             if table[j][i] == table[j + 1][i] and table[j + 1][i] == table[j + 2][i] and table[j + 2][i] == \
                     table[j + 3][i]:
-                foursame(j, i, j + 1, i, j + 2, i, j + 3, i)
+                foursame(table, j, i, j + 1, i, j + 2, i, j + 3, i)
                 signal = 4
 
     for i in xrange(0, 10, 1):
         for j in xrange(0, 8, 1):
             if table[j][i] == table[j + 1][i] and table[j + 1][i] == table[j + 2][i]:
-                threesame(j, i, j + 1, i, j + 2, i)
+                threesame(table, j, i, j + 1, i, j + 2, i)
                 signal = 3
 
 
-def drop(table, signal):
+def drop(table, signal, num):
     for i in xrange(0, 10, 1):
         for j in xrange(0, 9, 1):
             if table[i][j] == 0 and table[i][j + 1] != 0:
@@ -185,34 +184,37 @@ def drop(table, signal):
                         table[0][x] = random.randint(1, num)
     return table
 
+def main():
+    # To avoid stack overflow,input will be bigger than 4.
+    table = np.zeros((10, 10), int)
+    num = input("How many colors do you want?")
+    initTable(table, num)
+    printTable(table, num)
 
-# To avoid stack overflow,input will be bigger than 4.
-table = np.zeros((10, 10), int)
-num = input("How many colors do you want?")
-initTable(table, num)
-printTable(table)
-global signal
-while True:
-    coor = raw_input("format:x1 y1 x2 y2,split with space :")
-    if coor == "end":
-        break
-    else:
-        coor_list = coor.split(' ', 5)
-        x1 = int(coor_list[0])
-        y1 = int(coor_list[1])
-        x2 = int(coor_list[2])
-        y2 = int(coor_list[3])
-        if checkCoor(x1, y1, x2, y2) == 1:
-            print("same coordinate")
-        elif checkCoor(x1, y1, x2, y2) == 6:
-            print("error coordinate")
-        elif checkCoor(x1, y1, x2, y2) == 2:
-            print("error coordinate on x")
-        elif checkCoor(x1, y1, x2, y2) == 4:
-            print("error coordinate on y")
-        elif checkCoor(x1, y1, x2, y2) == 3:
-            print(swapx(x1, x2, y1))
+    while True:
+        coor = raw_input("format:x1 y1 x2 y2,split with space :")
+        if coor == "end":
+            break
         else:
-            print(swapy(x1, y1, y2))
+            coor_list = coor.split(' ', 5)
+            x1 = int(coor_list[0])
+            y1 = int(coor_list[1])
+            x2 = int(coor_list[2])
+            y2 = int(coor_list[3])
+            if checkCoor(x1, y1, x2, y2) == 1:
+                print("same coordinate")
+            elif checkCoor(x1, y1, x2, y2) == 6:
+                print("error coordinate")
+            elif checkCoor(x1, y1, x2, y2) == 2:
+                print("error coordinate on x")
+            elif checkCoor(x1, y1, x2, y2) == 4:
+                print("error coordinate on y")
+            elif checkCoor(x1, y1, x2, y2) == 3:
+                print(swapx(table, x1, x2, y1, num))
+            else:
+                print(swapy(table, x1, y1, y2, num))
+if __name__ == '__main__':
+    main()
+
 
 
