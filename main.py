@@ -1,3 +1,4 @@
+# coding=utf-8
 import random
 import numpy as np
 
@@ -8,7 +9,7 @@ def initTable(list, num):
     for i in xrange(0, 10, 1):
         for j in xrange(0, 10, 1):
             list[i][j] = random.randint(1, num)
-    pass
+
 
 def checkTable(table):
     same = 0
@@ -27,7 +28,7 @@ def checkTable(table):
 
 def printTable(table,num):
     if checkTable(table) == True:
-        print("table refresh")
+        print("有連線，重新刷新盤面")
         initTable(table, num)
         printTable(table, num)
     else:
@@ -67,12 +68,12 @@ def swapx(table, x1, x2, y, num):
     table[i][j1] = table[i][j2]
     table[i][j2] = temp
     if (checkTable(table)):
-        print("nice")
+        print("交換成功")
         searchConnected(table)
         score_count(table)
         print(drop(table, signal, num))
     else:
-        print("change failed")
+        print("交換失敗")
         temp = table[i][j1]
         table[i][j1] = table[i][j2]
         table[i][j2] = temp
@@ -88,13 +89,13 @@ def swapy(table, x, y1, y2, num):
     table[i1][j] = table[i2][j]
     table[i2][j] = temp
     if (checkTable(table)):
-        print("nice")
+        print("交換成功")
         searchConnected(table)
         score_count(table)
         print(drop(table, signal, num))
             
     else :
-        print("change failed")
+        print("交換失敗")
         temp = table[i1][j]
         table[i1][j] = table[i2][j]
         table[i2][j] = temp
@@ -166,14 +167,7 @@ def searchConnected(table):
 def drop(table, signal, num):
     for i in xrange(0, 10, 1):
         for j in xrange(0, 9, 1):
-            if table[i][j] == 0 and table[i][j + 1] != 0:
-                # vertical drop
-                for k in xrange(i+signal-1, signal-1, -1):
-                    table[k][j] = table[k-signal][j]
-                for l in xrange(0, signal, 1):
-                    table[l][j] = random.randint(1, num)
-
-            elif table[i][j] == 0 and table[i][j + 1] == 0:
+            if table[i][j] == 0 and table[i][j + 1] == 0:
                 # horizontal drop
                 if i == 0:
                     for k in xrange(j, j + signal, 1):
@@ -185,8 +179,16 @@ def drop(table, signal, num):
                     for x in xrange(j, j + signal, 1):
                         table[0][x] = random.randint(1, num)
 
+    for i in xrange(9, -1, -1):
+        for j in xrange(9, 0, -1):
+            if table[i][j] == 0 and table[i][j - 1] != 0:
+                # vertical drop
+                for k in xrange(i, signal-1, -1):
+                    table[k][j] = table[k-signal][j]
+                for l in xrange(0, signal, 1):
+                    table[l][j] = random.randint(1, num)
     for i in xrange(0,9,1):
-        if table[i][9] == 0 and table[i+1][9] == 0:
+        if table[i][0] == 0 and table[i+1][0] == 0:
             for k in xrange(i+signal-1, signal-1, -1):
                 table[k][9] = table[k-signal][9]
             for l in xrange(0, signal, 1):
@@ -204,11 +206,11 @@ def score_count(table):
 def main():
     # To avoid stack overflow,input will be bigger than 4.
     table = np.zeros((10, 10), int)
-    num = input("How many colors do you want?")
+    num = input("要產生幾種顏色?")
     initTable(table, num)
     printTable(table, num)
     while True:
-        coor = raw_input("format:x1 y1 x2 y2,split with space :")
+        coor = raw_input("輸入要交換的座標，格式x1 y1 x2 y2 中間以空白分開，輸入end結束輸入")
         if coor == "end":
             break
         else:
@@ -218,27 +220,32 @@ def main():
             x2 = int(coor_list[2])
             y2 = int(coor_list[3])
             if checkCoor(x1, y1, x2, y2) == 1:
-                print("same coordinate")
+                print("你輸入了相同座標")
             elif checkCoor(x1, y1, x2, y2) == 6:
-                print("error coordinate")
+                print("輸入座標錯誤")
             elif checkCoor(x1, y1, x2, y2) == 2:
-                print("error coordinate on x")
+                print("x軸座標有誤")
             elif checkCoor(x1, y1, x2, y2) == 4:
-                print("error coordinate on y")
+                print("y軸座標有誤")
             elif checkCoor(x1, y1, x2, y2) == 3:
                 swapx(table, x1, x2, y1, num)
+                print("分數:" + str(score))
                 while checkTable(table):
                     searchConnected(table)
                     score_count(table)
                     drop(table, signal, num)
-                print(score)
+                    print (table)
+                    print("分數:" + str(score))
             else:
                 swapy(table, x1, y1, y2, num)
+                print("分數:" + str(score))
                 while checkTable(table):
                     searchConnected(table)
                     score_count(table)
                     drop(table, signal, num)
-                print(score)
+                    print (table)
+                    print("分數:" + str(score))
+
 if __name__ == '__main__':
     main()
 
