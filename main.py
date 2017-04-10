@@ -2,6 +2,8 @@ import random
 import numpy as np
 
 global signal
+score = 0
+
 def initTable(list, num):
     for i in xrange(0, 10, 1):
         for j in xrange(0, 10, 1):
@@ -67,6 +69,7 @@ def swapx(table, x1, x2, y, num):
     if (checkTable(table)):
         print("nice")
         searchConnected(table)
+        score_count(table)
         print(drop(table, signal, num))
     else:
         print("change failed")
@@ -87,15 +90,15 @@ def swapy(table, x, y1, y2, num):
     if (checkTable(table)):
         print("nice")
         searchConnected(table)
+        score_count(table)
         print(drop(table, signal, num))
-    else:
+            
+    else :
         print("change failed")
         temp = table[i1][j]
         table[i1][j] = table[i2][j]
         table[i2][j] = temp
         print(table)
-
-
 
 def threesame(table, a1, b1, a2, b2, a3, b3):
     table[a1][b1] = 0
@@ -116,7 +119,6 @@ def fivesame(table, a1, b1, a2, b2, a3, b3, a4, b4, a5, b5):
     table[a3][b3] = 0
     table[a4][b4] = 0
     table[a5][b5] = 0
-
 
 def searchConnected(table):
     global signal
@@ -166,7 +168,7 @@ def drop(table, signal, num):
         for j in xrange(0, 9, 1):
             if table[i][j] == 0 and table[i][j + 1] != 0:
                 # vertical drop
-                for k in xrange(i, signal-1, -1):
+                for k in xrange(i+signal-1, signal-1, -1):
                     table[k][j] = table[k-signal][j]
                 for l in xrange(0, signal, 1):
                     table[l][j] = random.randint(1, num)
@@ -182,7 +184,22 @@ def drop(table, signal, num):
                             table[k][l] = table[k - 1][l]
                     for x in xrange(j, j + signal, 1):
                         table[0][x] = random.randint(1, num)
+
+    for i in xrange(0,9,1):
+        if table[i][9] == 0 and table[i+1][9] == 0:
+            for k in xrange(i+signal-1, signal-1, -1):
+                table[k][9] = table[k-signal][9]
+            for l in xrange(0, signal, 1):
+                table[l][9] = random.randint(1, num)
+            
     return table
+
+def score_count(table):
+    global score
+    for x in xrange(0,10):
+        for y in xrange(0,10):
+            if table[x][y] == 0:
+                score += 1
 
 def main():
     # To avoid stack overflow,input will be bigger than 4.
@@ -190,7 +207,6 @@ def main():
     num = input("How many colors do you want?")
     initTable(table, num)
     printTable(table, num)
-
     while True:
         coor = raw_input("format:x1 y1 x2 y2,split with space :")
         if coor == "end":
@@ -210,9 +226,19 @@ def main():
             elif checkCoor(x1, y1, x2, y2) == 4:
                 print("error coordinate on y")
             elif checkCoor(x1, y1, x2, y2) == 3:
-                print(swapx(table, x1, x2, y1, num))
+                swapx(table, x1, x2, y1, num)
+                while checkTable(table):
+                    searchConnected(table)
+                    score_count(table)
+                    drop(table, signal, num)
+                print(score)
             else:
-                print(swapy(table, x1, y1, y2, num))
+                swapy(table, x1, y1, y2, num)
+                while checkTable(table):
+                    searchConnected(table)
+                    score_count(table)
+                    drop(table, signal, num)
+                print(score)
 if __name__ == '__main__':
     main()
 
