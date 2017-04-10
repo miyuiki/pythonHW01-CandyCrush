@@ -22,9 +22,11 @@ while checkTable(table):
 使用wile迴圈檢查是否還可以再連線消除
 
 ![](https://github.com/miyuiki/pythonHW01-CandyCrush/blob/master/Capture/capture%2004102250.jpg?raw=true)
+
 最終無法再連現實的盤面
 
 ### 其他功能
 
 ![](https://github.com/miyuiki/pythonHW01-CandyCrush/blob/master/Capture/capture%2004102258.jpg?raw=true)
+
 一些防呆措施
