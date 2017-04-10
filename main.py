@@ -166,8 +166,8 @@ def drop(table, signal, num):
         for j in xrange(0, 9, 1):
             if table[i][j] == 0 and table[i][j + 1] != 0:
                 # vertical drop
-                for k in xrange(0, signal + i, 1):
-                    table[k + signal][j] = table[k][j]
+                for k in xrange(i, signal-1, -1):
+                    table[k][j] = table[k-signal][j]
                 for l in xrange(0, signal, 1):
                     table[l][j] = random.randint(1, num)
 
